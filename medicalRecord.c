@@ -1,9 +1,31 @@
 #include <stdio.h>
+#include <string.h>
 #include "medicalRecord.h"
 
 void parseParams(int argc, char *argv[])
 {
-    
+    /* 
+        number of icd codes:    -c
+        file name:              -r
+        help                    -h
+        *-c and -r are mutually exclusive*
+    */
+
+    int i;
+
+    for (i = 0; i < strlen(argv); i++)
+    {
+        char *parser = argv[i];
+
+        if (parser[0] == '-') //parameter signifier
+        {
+            switch (parser[1])
+            {
+                case 'c':
+                    
+            }
+        }
+    }
 }
 
 char* clearBuffer(char* buffer)
