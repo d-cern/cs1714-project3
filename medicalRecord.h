@@ -7,6 +7,9 @@
 #define MAX_ICD_LEN 10
 #define BUFFER_LEN 1024
 
+#define TRUE 1
+#define FALSE 0
+
 //enums
 typedef enum State {  AK, AL, AR, AZ, CA, CO, CT, DE, FL, GA, HI, IA, ID, IL, IN, KS, KY, LA, MA, MD, ME, MI, MN, MP, MS, MT, MO, NC, ND, NE, NV, NH, NJ, NM, NY, OH, OK, OR, PA, PR, RI, SC, SD, TN, TX, UT, VI, VT, VA, WA, WV, WI, WY  } State;
 
@@ -32,18 +35,22 @@ typedef struct ICD_INFO
 typedef struct __PARAMS
 {
     unsigned int codeCount;
-    char* workingDir;
-    size_t dirLen;
-
+    unsigned int boolCodeCount;
+    unsigned int boolFileName;
+    char *fileName;
 } CmdLineParams;
 
-CmdLineParams params;  // global
-
 //function prototypes
-int checkState(char char1, char char2, enum State* state);
+void parseParams(int argc, char *argv[], CmdLineParams *params);
 
-char* clearBuffer(char* buffer);
+void createNewRecord(int icdCount, int recordsNum);
 
-void parseParams(int argc, char *argv[]);
+void loadRecord(char *fileName, FILE *fp);
+
+void printHelp();
+
+char *clearBuffer(char *buffer);
+
+int checkState(char char1, char char2, enum State *state);
 
 #endif
