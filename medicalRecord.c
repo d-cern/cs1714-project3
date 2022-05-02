@@ -11,8 +11,9 @@ void parseParams(int argc, char *argv[], CmdLineParams *params)
         help                    -h
         *-c and -r are mutually exclusive*
     */
-       
     int i;
+    params->boolCodeCount = FALSE;  
+    params->boolFileName = FALSE;
     
     for (i = 1; i < argc; i++)
     {
@@ -29,21 +30,21 @@ void parseParams(int argc, char *argv[], CmdLineParams *params)
                     break;
                 case 'c':
                     params->boolCodeCount = TRUE;
-                    params->codeCount = atoi(argv[i + 1]);
-                    if (params->codeCount < 1)
+                    //if count parameter is negative i.e., has '-'
+                    if (argv[i + 1][0] == '-' || atoi(argv[i + 1]) < 1)
                     {
-                        printf("ERROR: -c value must be greater than 0\n");
+                        printf("ERROR: -c value must be an integer greater than 0\n");
                         exit(1);
+                    }
+                    else 
+                    {
+                        params->codeCount = atoi(argv[i + 1]);
                     }
                     break;
                 case 'r':
                     params->boolFileName = TRUE;
                     params->fileName = (char*)malloc(sizeof(char) * strlen(argv[i + 1]));
                     strcpy(params->fileName, argv[i + 1]); //stack dump - solved
-                    break;
-                default:
-                    params->boolFileName = FALSE;
-                    params->boolCodeCount = FALSE;
                     break;
             }
         }
@@ -128,7 +129,7 @@ void createNewRecord(int icdCount, int recordsNum)
         }
         if (strlen(buffer) == 0)
         {
-            printf("ERROR: must enter street name");
+            printf("ERROR: must enter street name\n");
         }
         else if (strlen(buffer) > MAX_STREET_LEN)
         {
@@ -177,11 +178,11 @@ void createNewRecord(int icdCount, int recordsNum)
 
         if (buffer == 0)
         {
-            printf("ERROR: must enter state");
+            printf("ERROR: must enter state\n");
         }
         else if (strlen(buffer) > 2)
         {
-            printf("ERROR: state must not exceed 2 characters");
+            printf("ERROR: state must not exceed 2 characters\n");
         }
         else
         {
@@ -200,10 +201,10 @@ void createNewRecord(int icdCount, int recordsNum)
 
         if (i > 0)
         {
-            printf("Invalid ZIP code");
+            printf("Invalid ZIP code\n");
         }
 
-        printf("Enter ZIP code in format \"XXXXX-XXXX\": ");
+        printf("Enter ZIP code in format XXXXX-XXXX: ");
         scanf("%u-%u", &zipCode, &zipPlusFour);
         i++;
 
@@ -223,7 +224,7 @@ void createNewRecord(int icdCount, int recordsNum)
     {
         if (i > 0)
         {
-            printf("Invalid input");
+            printf("Invalid input\n");
         }
 
         printf("Enter 0 for \"Cell\" or 1 for \"Landline\": ");
@@ -291,13 +292,11 @@ void createNewRecord(int icdCount, int recordsNum)
     printf("\nICD codes and dates:\n");
     if (icdCount != 0)
     {
-        for (i = 0; i < 4; i++)
+        for (i = 0; i < icdCount; i++)
         {
             printf("%.*s | %u\n", 10, icdList[i].code, icdList[i].date);
         }
     }
-
-    printf("\n test 123\n");
 
     //save record to file
     do
@@ -306,14 +305,14 @@ void createNewRecord(int icdCount, int recordsNum)
         scanf("%s", buffer);
         if(strlen(buffer) == 0)
         {
-            printf("ERROR: must enter input");
+            printf("ERROR: must enter input\n");
         }
         else if (strcmp(buffer, "Y") != 0 && strcmp(buffer,"N") != 0 && strcmp(buffer,"y") != 0 && strcmp(buffer,"n") != 0)
         {
-            printf("ERROR: input must be 'Y' or 'N'");
+            printf("ERROR: input must be 'Y' or 'N'\n");
         }
 
-    } while ( (strlen(buffer) == 0 || strlen(buffer) > BUFFER_LEN) || (strcmp(buffer, "Y") != 0 && strcmp(buffer,"N") != 0 && strcmp(buffer,"y") != 0 && strcmp(buffer,"n") != 0));
+    } while ( (strlen(buffer) == 0 || strlen(buffer) > BUFFER_LEN) && (strcmp(buffer, "Y") != 0 && strcmp(buffer,"N") != 0 && strcmp(buffer,"y") != 0 && strcmp(buffer,"n") != 0));
 
     strcpy(userSelect, buffer);
 
@@ -382,15 +381,15 @@ void createNewRecord(int icdCount, int recordsNum)
     }
     else
     {
+        printf("%s\n", userSelect);
+        //free memory
+        free(firstName);
+        free(lastName);
+        free(icdList);
+        free(phone);
         exit(0);
     }
-    
 
-    //free memory
-    free(firstName);
-    free(lastName);
-    free(icdList);
-    free(phone);
 }
 
 void loadRecord(char *fileName, FILE *fp)
@@ -412,7 +411,7 @@ void loadRecord(char *fileName, FILE *fp)
     // printing file contents
     while (fgets(buffer, BUFFER_LEN, fp))
     {
-        printf("%s\n", buffer);
+        printf("%s", buffer);
     }
 
     // close file
@@ -422,10 +421,13 @@ void loadRecord(char *fileName, FILE *fp)
 void printHelp()
 {
     printf("Usage:\n");
-    printf("\t-c [ICD count]\n");
-    printf("\t  Specify number of ICD codes to enter\n");
-    printf("\t-r [File name]\n");
-    printf("\t   Specify record file to open\n");
+    printf("\t-c [integer]\n");
+    printf("\t   Specify number of ICD codes to enter\n\n");
+    printf("\t-r [string]\n");
+    printf("\t   Specify record file to open\n\n");
+    printf("\t-h\n");
+    printf("\t   Show help for command line parameters\n\n");
+    printf("ATTENTION: -c and -r are mutually exclusive\n\n");
     exit(0);
 }
 

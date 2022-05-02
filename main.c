@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
     // conditional for params
     if (ptrParams->boolCodeCount == TRUE)
     {
-        printf("Creating new record...\n");
-        createNewRecord(ptrParams->boolCodeCount, recordsNum);
+        printf("Creating new record with %d ICD code(s)...\n", ptrParams->codeCount);
+        createNewRecord(ptrParams->codeCount, recordsNum);
     }
     else if (ptrParams->boolFileName == TRUE)
     {
