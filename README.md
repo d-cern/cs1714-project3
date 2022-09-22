@@ -1,4 +1,4 @@
-# Project 3 for CS1714 - Intro to Programming II Spring 2022 
+# Spring 2022 Project 3 for CS1714 (Intro to Programming II)
 A basic program that stores medical records consisting of:
 - Name
 - Address
